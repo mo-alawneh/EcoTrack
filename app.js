@@ -3,7 +3,7 @@ import dotenv from 'dotenv/config';
 
 //! app 
 const app = express();
-const PORT = process.env.PORT || 8000;
+const PORT = process.env.PORT || 3000;
 
 //! middleware
 app.use(express.json());

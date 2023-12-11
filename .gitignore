@@ -6,3 +6,6 @@ node_modules/
 
 # Ignore the push-script.bat file (script to push into GitHub repository)
 push-script.bat
+
+# Ignore the file of testing
+test.js
