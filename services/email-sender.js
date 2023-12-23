@@ -10,4 +10,15 @@ const transporter = nodemailer.createTransport({
     }
 });
 
-export default transporter;
+/**
+ * @param {JSON} emailOptions 
+ */
+export function sendEmail(emailOptions) {
+    transporter.sendMail(emailOptions, (error, info) => {
+        //! add from field to mail options
+        emailOptions.from = process.env.EMAIL_ADDRESS;
+        
+        if (error)
+            throw error;
+    });
+}
