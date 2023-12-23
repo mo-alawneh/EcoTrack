@@ -5,7 +5,7 @@ import { Permissions, Category } from '../enums/enums.js';
 import { AdminCannotBeRemovedError, WeakPasswordError } from '../errors/errors.js';
 import PasswordChecker from '../helpers/PasswordChecker.js';
 import CodeGenerator from '../helpers/CodeGenerator.js';
-import { sendEmail } from '../services/email-sender.js';
+import EmailSender from '../services/EmailSender.js';
 
 class User {
     /**
@@ -46,7 +46,6 @@ class User {
             this.middleName,
             this.lastName, 
             this.username,
-            this.email,
             createHash('sha256').update(this.password).digest('hex'),
             this.birthDate,
             this.joinedAt,
@@ -54,7 +53,8 @@ class User {
             this.category,
             this.country,
             this.city,
-            this.score
+            this.score,
+            this.email
         ]);
     }
 
@@ -90,61 +90,65 @@ class User {
      */
     static async updateUserInfo(username, info) {
         const { name, email, password, birthDate, category, location } = info;
-
+    
+        let updateClauses = [];
+    
         if (name) {
             const { firstName, middleName, lastName } = name;
             if (firstName) {
-                let sql = /*sql*/`update users set first_name = ? where username = ?`;
-                return await db.execute(sql, [firstName, username]);
+                updateClauses.push({ field: 'first_name', value: firstName });
             }
-
-            if (middleName) { 
-                let sql = /*sql*/`update users set middle_name = ? where username = ?`;
-                return await db.execute(sql, [middleName, username]);
+    
+            if (middleName) {
+                updateClauses.push({ field: 'middle_name', value: middleName });
             }
-
-            if (lastName) { 
-                let sql = /*sql*/`update users set last_name = ? where username = ?`;
-                return await db.execute(sql, [lastName, username]);
+    
+            if (lastName) {
+                updateClauses.push({ field: 'last_name', value: lastName });
             }
         }
-
+    
         if (email) {
-            let sql = /*sql*/`update users set email = ? where username = ?`;
-            return await db.execute(sql, [email, username]);
+            updateClauses.push({ field: 'email', value: email });
         }
-
-        if (password) { 
+    
+        if (password) {
             if (!PasswordChecker.isStrongPassword(password))
                 throw new WeakPasswordError();
-
-            let sql = /*sql*/`update users set password = ? where username = ?`;
-            return await db.execute(sql, [password, username]);
+    
+            updateClauses.push({ field: 'password', value: createHash('sha256').update(password).digest('hex') });
         }
-
-        if (birthDate) { 
-            let sql = /*sql*/`update users set birth_date = ? where username = ?`;
-            return await db.execute(sql, [birthDate, username]);
+    
+        if (birthDate) {
+            updateClauses.push({ field: 'birth_date', value: birthDate });
         }
-
-        if (category) { 
-            let sql = /*sql*/`update users set category = ? where username = ?`;
-            return await db.execute(sql, [category, username]);
+    
+        if (category) {
+            updateClauses.push({ field: 'category', value: category });
         }
-
+    
         if (location) {
             const { country, city } = location;
-
+    
             if (country) {
-                let sql = /*sql*/`update users set country = ? where username = ?`;
-                return await db.execute(sql, [country, username]);
+                updateClauses.push({ field: 'country', value: country });
             }
-
-            if (city) { 
-                let sql = /*sql*/`update users set city = ? where username = ?`;
-                return await db.execute(sql, [city, username]);
+    
+            if (city) {
+                updateClauses.push({ field: 'city', value: city });
             }
         }
+    
+        if (updateClauses.length === 0) {
+            //! No updates to perform
+            return;
+        }
+    
+        const setStatements = updateClauses.map(({ field }) => `${field} = ?`).join(', ');
+        const values = updateClauses.map(({ value }) => value);
+    
+        const sql = `UPDATE users SET ${setStatements} WHERE username = ?`;
+        return await db.execute(sql, [...values, username]);
     }
 
     /**
@@ -154,18 +158,22 @@ class User {
      * @param {Category} category 
      * @param {JSON} location 
      */
-    static async search(name, username, email, permission, category, location) {
-        let query = /*sql*/`SELECT * FROM your_table_name WHERE 1`;
+    static async search(fields) {
+        let query = /*sql*/`SELECT * FROM users WHERE 1`;
 
-        const { firstName, middleName, lastName } = name || {};
-        if (firstName) {
-            query += /*sql*/` AND first_name = ?`;
-        }
-        if (middleName) {
-            query += /*sql*/` AND middle_name = ?`;
-        }
-        if (lastName) {
-            query += /*sql*/` AND last_name = ?`;
+        const {name, username, email, permission, category, location } = fields;
+        
+        if (name) {
+            const { firstName, middleName, lastName } = name || {};
+            if (firstName) {
+                query += /*sql*/` AND first_name = ?`;
+            }
+            if (middleName) {
+                query += /*sql*/` AND middle_name = ?`;
+            }
+            if (lastName) {
+                query += /*sql*/` AND last_name = ?`;
+            }
         }
 
         if (username) {
@@ -184,52 +192,40 @@ class User {
             query += /*sql*/` AND category = ?`;
         }
 
-        const { country, city } = location || {};
-        if (country) {
-            query += /*sql*/` AND country = ?`;
+        if (location) {
+            const { country, city } = location;
+            if (country) {
+                query += /*sql*/` AND country = ?`;
+            }
+            if (city) {
+                query += /*sql*/` AND city = ?`;
+            }
         }
-        if (city) {
-            query += /*sql*/` AND city = ?`;
-        }
+
+        return await db.execute(query);
     }
 
     /**
      * @param {string} email 
      */
-    static async handleForgetPassword(email) {
+    static async handleForgetPassword(username) {
         //! 1- generate a new password
         const newPassword = CodeGenerator.generatePassword();
         
         //! 2- send the new password via email
+        let sqlToGetEmail = /*sql*/`select email from users where username = ?`;
+        const [user, _] = await db.execute(sqlToGetEmail, [username]);
+        console.log(user);
         const emailOptions = {
-            to: email,
+            to: user[0].email,
             subject: 'New Password',
             text: `You password has been updated to ${newPassword}`
         }
-        sendEmail(emailOptions);
+        EmailSender.sendEmail(emailOptions);
 
         //! 3- update the password in the database
-        let sql = /*sql*/`update users set password = ? where email = ?`;
-        return await db.execute(sql, [newPassword, email]);
-    }
-
-    /**
-     * @param {string} email 
-     */
-    static async verifyEmail(email) {
-         //! 1- generate a verification code
-        const verificationCode = CodeGenerator.generateVerificationCode();
-        
-        //! 2- send the new password via email
-        const emailOptions = {
-            to: email,
-            subject: 'Verification Code',
-            text: `You verification code is ${verificationCode}`
-        }
-        sendEmail(emailOptions);
-
-        //! return it
-        return verificationCode;
+        let sql = /*sql*/`update users set password = ? where username = ?`;
+        return await db.execute(sql, [createHash('sha256').update(newPassword).digest('hex'), username]);
     }
 }
 
