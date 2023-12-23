@@ -3,7 +3,6 @@ import dotenv from 'dotenv/config';
 
 import usersRouter from './routers/users.js';
 import verificationRouter from './routers/verification.js';
-import authRouter from './routers/auth.js';
 
 //! app 
 const app = express();
@@ -20,4 +19,3 @@ app.listen(PORT, () => {
 //! routers
 app.use('/users', usersRouter);
 app.use('/verification', verificationRouter);
-app.use('/auth', authRouter);
