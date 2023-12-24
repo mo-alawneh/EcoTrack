@@ -1,4 +1,4 @@
-export const Permissions = Object.freeze ({
+export const Permissions = Object.freeze({
     ADMIN: 1,
     CONTRIBUTOR: 2
 });

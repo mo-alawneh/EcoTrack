@@ -4,6 +4,10 @@ import dotenv from 'dotenv/config';
 import usersRouter from './routers/users.js';
 import verificationRouter from './routers/verification.js';
 import authRouter from './routers/auth.js';
+import typesRoyter from './routers/types.js';
+import ratingRouter from './routers/rating.js';
+import adminRouter from './routers/admin.js';
+import envRouter from './routers/env-data.js';
 
 //! app 
 const app = express();
@@ -21,3 +25,7 @@ app.listen(PORT, () => {
 app.use('/users', usersRouter);
 app.use('/verification', verificationRouter);
 app.use('/auth', authRouter);
+app.use('/types', typesRoyter);
+app.use('/rating', ratingRouter);
+app.use('/admin', adminRouter);
+app.use('/env-data', envRouter);

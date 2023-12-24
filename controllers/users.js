@@ -1,5 +1,5 @@
 import User from '../models/User.js';
-import { WeakPasswordError, AdminCannotBeRemovedError } from '../errors/errors.js';
+import { WeakPasswordError, AdminCannotBeRemovedError } from '../errors/user.js';
 
 export const getAllUsers = async (req, res, next) => {
     const [users, _] = await User.getAllUsers();
@@ -42,7 +42,7 @@ export const registerUser = async (req, res, next) => {
 
     } catch (error) {
         if (error instanceof WeakPasswordError) {
-            res.status(400).json({ error: 'Weak password! Please choose a stronger password.' });
+            res.status(400).json({ error: error.message });
 
         } else {
             res.status(409).json({ error: 'Already used username!' });
@@ -55,11 +55,12 @@ export const deleteUser = async (req, res, next) => {
     try {
         const username = req.params.username;
         const [result, _] = await User.deleteUser(username);
-        res.status(204).json({message : "User deleted successfully!"});
+        res.status(204).json({message : 'User deleted successfully!'});
 
-    } catch (AdminCannotBeRemovedError) {
-        res.status(403).json({ error: 'Admin cannot be removed!' });
-
+    } catch (error) {
+        if (error instanceof AdminCannotBeRemovedError) { 
+            res.status(403).json({ error: 'Admin cannot be removed!' });
+        }
     }
 };
 

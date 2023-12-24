@@ -18,23 +18,6 @@ class ExcelSheetReader {
 
         return workbook_response;
     }
-
-    eliminateEmptyRows() {
-        const workbook_response = this.fetchExcelSheetData();
-
-        //! slice the 
-        let i;
-        for (i = 0; i < workbook_response.length; i++) { 
-            if (workbook_response[i].type == null || workbook_response[i].value == null || workbook_response[i].date == null) {
-                break;
-            }
-        }
-        return workbook_response.slice(0, i);
-    }
-
-    readExcelSheet() {
-        return this.eliminateEmptyRows();
-    }
 }
 
 export default ExcelSheetReader;
