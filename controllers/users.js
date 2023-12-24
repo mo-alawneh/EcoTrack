@@ -1,5 +1,4 @@
 import User from '../models/User.js';
-import { WeakPasswordError, AdminCannotBeRemovedError } from '../errors/user.js';
 
 export const getAllUsers = async (req, res, next) => {
     const [users, _] = await User.getAllUsers();

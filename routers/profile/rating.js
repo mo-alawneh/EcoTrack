@@ -3,7 +3,7 @@ import {
     rateUser,
     calculateUserRating,
     getTopRatedUsers
-} from '../controllers/rating.js';
+} from '../../controllers/rating.js';
 
 //! create a router
 const router = express.Router();

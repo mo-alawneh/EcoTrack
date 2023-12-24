@@ -3,7 +3,6 @@ import { createHash } from 'crypto';
 import db from '../config/db.js';
 import { Permissions, Category } from '../enums/user.js';
 import { AdminCannotBeRemovedError, WeakPasswordError } from '../errors/user.js';
-import { InvalidRateError } from '../errors/rating.js';
 import PasswordChecker from '../helpers/PasswordChecker.js';
 import CodeGenerator from '../helpers/CodeGenerator.js';
 import EmailSender from '../services/EmailSender.js';

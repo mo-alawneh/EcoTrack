@@ -23,7 +23,6 @@ class ExcelSheet {
     async storeData() {
         const excelSheetReader = new ExcelSheetReader(this.path);
         const excelData = excelSheetReader.fetchExcelSheetData();
-        console.log(excelData);
         for (let i = 0; i < excelData.length; i++) { 
             //! generate data JSON
             const data = {
