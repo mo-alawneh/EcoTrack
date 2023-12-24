@@ -1,4 +1,5 @@
 import Type from '../models/Type.js';
+import { InvalidOverallCategory } from '../errors/types.js';
 
 export const addType = async (req, res, next) => { 
     try {
@@ -8,8 +9,8 @@ export const addType = async (req, res, next) => {
         res.status(201).json(result);
 
     } catch(error) {
-        res.status(409).json({ error: 'Already used name!' });
-
+        res.status(400).json({ error: error.message });
+        
     }
 };
 
@@ -45,8 +46,14 @@ export const deleteType = async (req, res, next) => {
 export const updateType = async (req, res, next) => { 
     const id = req.params.id;
     const info = req.body;
-    const [result, _] = await Type.updateType(id, info);
-    res.status(200).json(result);
+    try {
+        const [result, _] = await Type.updateType(id, info);
+        res.status(200).json(result);
+
+    } catch(error) {
+        res.status(400).json({ error: error.message });
+
+    }
 }
 
 export const search = async (req, res, next) => {

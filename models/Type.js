@@ -1,5 +1,6 @@
 import { OverallCategory, TypeStatus } from '../enums/type.js';
 import db from '../config/db.js';
+import { InvalidOverallCategory } from '../errors/types.js';
 
 class Type {
     /**
@@ -11,6 +12,12 @@ class Type {
         this.name = name;
         this.descripton = descripton;
         this.status = TypeStatus.DIRTY;
+        //! check overall category
+        if (overallCategory < 1 
+            || overallCategory > Object.keys(OverallCategory).length) {
+            throw new InvalidOverallCategory();
+
+        }
         this.overallCategory = overallCategory;
     }
 
@@ -61,6 +68,11 @@ class Type {
         }
 
         if (overall_category !== undefined) {
+            if (overall_category < 1 
+                || overall_category > Object.keys(OverallCategory).length) {
+                throw new InvalidOverallCategory(); 
+                
+            }
             updateClauses.push({ field: 'overall_category', value: overall_category });
         }
 

@@ -8,6 +8,7 @@ import typesRoyter from './routers/types.js';
 import ratingRouter from './routers/rating.js';
 import adminRouter from './routers/admin.js';
 import envRouter from './routers/env-data.js';
+import excelSheetRouter from './routers/excel-sheet.js';
 
 //! app 
 const app = express();
@@ -29,3 +30,4 @@ app.use('/types', typesRoyter);
 app.use('/rating', ratingRouter);
 app.use('/admin', adminRouter);
 app.use('/env-data', envRouter);
+app.use('/excel-sheet', excelSheetRouter);
