@@ -2,7 +2,9 @@ import { v4 as uuidv4 } from 'uuid';
 import CurrentDateGenerator from '../helpers/CurrentDateGenerator.js';
 import db from '../config/db.js';
 import { TypeStatus } from '../enums/type.js';
+import { Source } from '../enums/env-data.js';
 import { AddedToDirtyTypeError } from '../errors/types.js';
+import { InvalidSourceError } from '../errors/env-data.js';
 
 class EnvData {
     /**
@@ -16,6 +18,10 @@ class EnvData {
         this.username = username;
 
         const { type, value, source, description } = data;
+        if (source < 1 
+            || source > Object.keys(Source).length) {
+                throw new InvalidSourceError();
+            }
         this.type = type;
         this.value = value;
         this.source = source;
@@ -84,6 +90,10 @@ class EnvData {
 
         if (data) {
             const { type, value, source, description } = data;
+            if (source < 1 
+                || source > Object.keys(value).length) {
+                    throw new InvalidSourceError();
+                }
 
             if (type !== undefined) {
                 updateClauses.push({ field: 'type', value: type });

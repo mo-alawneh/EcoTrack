@@ -8,10 +8,8 @@ export const rateUser = async (req, res, next) => {
         res.status(201).json(result);
 
     } catch (error) {
-        if (error instanceof InvalidRateError) {
-            res.status(400).json({ error: error.message });
-
-        }
+        res.status(400).json({ error: error.message });
+        
     }
 };
 

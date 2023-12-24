@@ -41,13 +41,8 @@ export const registerUser = async (req, res, next) => {
         res.status(201).json(result);
 
     } catch (error) {
-        if (error instanceof WeakPasswordError) {
-            res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
 
-        } else {
-            res.status(409).json({ error: 'Already used username!' });
-
-        }
     }
 };
 
@@ -58,9 +53,8 @@ export const deleteUser = async (req, res, next) => {
         res.status(204).json({message : 'User deleted successfully!'});
 
     } catch (error) {
-        if (error instanceof AdminCannotBeRemovedError) { 
-            res.status(403).json({ error: 'Admin cannot be removed!' });
-        }
+        res.status(400).json({ error: error.message });
+
     }
 };
 
@@ -71,8 +65,8 @@ export const updateUserInfo = async (req, res, next) => {
         const [result, _] = await User.updateUserInfo(username, info);
         res.status(200).json(result);
 
-    } catch(WeakPasswordError) {
-        res.status(400).json({ error: 'Weak password! Please choose a stronger password.' });
+    } catch(error) {
+        res.status(400).json({ error: error.message });
 
     }
 };

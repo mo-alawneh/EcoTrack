@@ -1,5 +1,6 @@
 import EnvData from '../models/EnvData.js';
 import { AddedToDirtyTypeError } from '../errors/types.js';
+import { InvalidSourceError } from '../errors/env-data.js';
 
 export const addEnvData = async (req, res, next) => { 
     const username = req.body.username;
@@ -12,13 +13,8 @@ export const addEnvData = async (req, res, next) => {
         res.status(201).json(result);
 
     } catch(error) {
-        if (error instanceof AddedToDirtyTypeError) { 
-            res.status(400).json({ error: error.message });
+        res.status(400).json({ error: error.message });
 
-        } else {
-            res.status(404).json({ error: 'Type is not existed!' });
-
-        }
     }
 };
 
@@ -48,8 +44,14 @@ export const deleteEnvData = async (req, res, next) => {
 export const updateEnvData = async (req, res, next) => { 
     const id = req.params.id;
     const info = req.body;
-    const [result, _] = await EnvData.updateEnvData(id, info);
-    res.status(200).json(result);
+    try {
+        const [result, _] = await EnvData.updateEnvData(id, info);
+        res.status(200).json(result);
+
+    } catch (error) {
+        res.status(400).json({ error: error.message });
+        
+    }
 };
 
 export const search = async (req, res, next) => {
