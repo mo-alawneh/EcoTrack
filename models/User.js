@@ -1,8 +1,9 @@
 import CurrentDateGenerator from '../helpers/CurrentDateGenerator.js';
 import { createHash } from 'crypto';
 import db from '../config/db.js';
-import { Permissions, Category } from '../enums/enums.js';
-import { AdminCannotBeRemovedError, WeakPasswordError } from '../errors/errors.js';
+import { Permissions, Category } from '../enums/user.js';
+import { AdminCannotBeRemovedError, WeakPasswordError } from '../errors/user.js';
+import { InvalidRateError } from '../errors/rating.js';
 import PasswordChecker from '../helpers/PasswordChecker.js';
 import CodeGenerator from '../helpers/CodeGenerator.js';
 import EmailSender from '../services/EmailSender.js';
@@ -226,6 +227,14 @@ class User {
         //! 3- update the password in the database
         let sql = /*sql*/`update users set password = ? where username = ?`;
         return await db.execute(sql, [createHash('sha256').update(newPassword).digest('hex'), username]);
+    }
+
+    /**
+     * @param {number} points 
+     */
+    static async increaseScore(username, points) {
+        let sql = /*sql*/`update users set score = score + ? where username = ?`;
+        return await db.execute(sql, [points, username]);
     }
 }
 
