@@ -1,5 +1,4 @@
 import Rating from '../models/Rating.js';
-import  { InvalidRateError } from '../errors/rating.js';
 
 export const rateUser = async (req, res, next) => { 
     try {
