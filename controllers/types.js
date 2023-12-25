@@ -57,7 +57,7 @@ export const updateType = async (req, res, next) => {
 
 export const search = async (req, res, next) => {
     const fields = req.body;
-    const [types, _] = await Type.searchTypes(fields);
+    const [types, _] = await Type.search(fields);
     if (types.length != 0) {
         res.status(200).json(types);
 

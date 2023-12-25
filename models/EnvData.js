@@ -36,11 +36,20 @@ class EnvData {
         this.town = town;
     }
 
+    /**
+     * @param {string} type 
+     */
+    static async isValidType(type) {
+        let sql = /*sql*/ `select status from types where id = ?`;
+        const [result, _] = await db.execute(sql, [type]);
+        return result[0].status == TypeStatus.DIRTY;
+    }
+
     async addEnvData() {
-        let sqlToGetTypeStatus = /*sql*/ `select status from types where id = ?`;
-        const [result, _] = await db.execute(sqlToGetTypeStatus, [this.type]);
-        if (result[0].status === TypeStatus.DIRTY)
+        if (await EnvData.isValidType(this.type)) {
             throw new AddedToDirtyTypeError();
+
+        }
 
         let sql = /*sql*/`insert into env_data values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
         return await db.execute(sql, [
@@ -96,6 +105,10 @@ class EnvData {
                 }
 
             if (type !== undefined) {
+                if (await EnvData.isValidType(type)) {
+                    throw new AddedToDirtyTypeError();
+        
+                }
                 updateClauses.push({ field: 'type', value: type });
             }
 
