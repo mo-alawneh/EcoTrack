@@ -1,6 +1,6 @@
 import { OverallCategory, TypeStatus } from '../enums/type.js';
 import db from '../config/db.js';
-import { InvalidOverallCategory } from '../errors/types.js';
+import { InvalidOverallCategory, SimilarTypeWasAlreadyAddedError } from '../errors/types.js';
 
 class Type {
     /**
@@ -21,7 +21,18 @@ class Type {
         this.overallCategory = overallCategory;
     }
 
+    static async isThereSimilarTypes(name) {
+        let sql = /*sql*/`select * from types where name LIKE ?`;
+        const [result, _] = await db.execute(sql, [`%${name}%`]);
+        return result.length > 0;
+    }
+
     async addType() {
+        if (await Type.isThereSimilarTypes(this.name)) { 
+            throw new SimilarTypeWasAlreadyAddedError();
+
+        }
+
         let sql = /*sql*/`insert into types(name, description, status, overall_category) values (?, ?, ?, ?)`;
         return await db.execute(sql, [
             this.name,
@@ -56,6 +67,10 @@ class Type {
         let updateClauses = [];
 
         if (name !== undefined) {
+            if (await Type.isThereSimilarTypes(name)) { 
+                throw new SimilarTypeWasAlreadyAddedError();
+    
+            }
             updateClauses.push({ field: 'name', value: name });
         }
 
@@ -91,7 +106,7 @@ class Type {
     /**
      * @param {JSON} fields 
      */
-    static async searchTypes(fields) {
+    static async search(fields) {
         let query = /*sql*/`SELECT * FROM types WHERE 1`;
 
         const { name, description, status, overall_category } = fields;

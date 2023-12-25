@@ -13,3 +13,11 @@ export class AddedToDirtyTypeError extends Error {
         Error.captureStackTrace(this, this.constructor);
     }
 }
+
+export class SimilarTypeWasAlreadyAddedError extends Error { 
+    constructor(message = 'A similar type was already added!') {
+        super(message);
+        this.name = this.constructor.name;
+        Error.captureStackTrace(this, this.constructor);
+    }
+}
