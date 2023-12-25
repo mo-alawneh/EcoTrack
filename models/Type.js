@@ -96,9 +96,8 @@ class Type {
             updateClauses.push({ field: 'description', value: description });
         }
 
-        if (status !== undefined) {
-            updateClauses.push({ field: 'status', value: status });
-        }
+        updateClauses.push({ field: 'status', value: TypeStatus.DIRTY }); //! status must set to DIRTY
+
 
         if (overall_category !== undefined) {
             if (!Type.isValidOverallCategory(overall_category)) {
