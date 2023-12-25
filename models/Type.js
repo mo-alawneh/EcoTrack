@@ -3,6 +3,14 @@ import db from '../config/db.js';
 import { InvalidOverallCategory, SimilarTypeWasAlreadyAddedError } from '../errors/types.js';
 
 class Type {
+
+    /**
+     * @param {OverallCategory} overallCategory 
+     */
+    static isValidOverallCategory(overallCategory) { 
+        return overallCategory >= 1 && overallCategory <= Object.keys(overallCategory).length
+    }
+
     /**
      * @param {string} name 
      * @param {string} descripton 
@@ -13,8 +21,7 @@ class Type {
         this.descripton = descripton;
         this.status = TypeStatus.DIRTY;
         //! check overall category
-        if (overallCategory < 1 
-            || overallCategory > Object.keys(OverallCategory).length) {
+        if (!Type.isValidOverallCategory(this.overallCategory)) {
             throw new InvalidOverallCategory();
 
         }
@@ -83,10 +90,9 @@ class Type {
         }
 
         if (overall_category !== undefined) {
-            if (overall_category < 1 
-                || overall_category > Object.keys(OverallCategory).length) {
-                throw new InvalidOverallCategory(); 
-                
+            if (!Type.isValidOverallCategory(overall_category)) {
+                throw new InvalidOverallCategory();
+    
             }
             updateClauses.push({ field: 'overall_category', value: overall_category });
         }

@@ -2,12 +2,30 @@ import CurrentDateGenerator from '../helpers/CurrentDateGenerator.js';
 import { createHash } from 'crypto';
 import db from '../config/db.js';
 import { Permissions, Category } from '../enums/user.js';
-import { AdminCannotBeRemovedError, WeakPasswordError } from '../errors/user.js';
+import { InvalidPermissionError,
+        InvalidCategoryError,
+        AdminCannotBeRemovedError,
+        WeakPasswordError } from '../errors/user.js';
 import PasswordChecker from '../helpers/PasswordChecker.js';
 import CodeGenerator from '../helpers/CodeGenerator.js';
 import EmailSender from '../services/EmailSender.js';
 
 class User {
+
+    /**
+     * @param {Permissions} permission  
+     */
+    static isValidPermission(permission) {
+        return permission >= 1 && permission <= Object.keys(Permissions).length;
+    }
+
+    /**
+     * @param {Category} category 
+     */
+    static isValidCategory(category) {
+        return category >= 1 && category <= Object.keys(Category).length;
+    }
+
     /**
      * @param {JSON} name 
      * @param {string} username
@@ -31,6 +49,15 @@ class User {
         this.birthDate = birthDate;
         this.joinedAt = CurrentDateGenerator.getCurrentDate();
         this.permission = permission;
+        if (!User.isValidPermission(this.permission)) {
+            throw new InvalidPermissionError();
+
+        }
+
+        if (!User.isValidCategory(this.category)) {
+            throw new InvalidCategoryError();
+
+        }
         this.category = category;
         const { country, city } = location;
         this.country = country;
@@ -124,6 +151,10 @@ class User {
         }
     
         if (category) {
+            if (!User.isValidCategory(category)) {
+                throw new InvalidCategoryError();
+                
+            }
             updateClauses.push({ field: 'category', value: category });
         }
     
