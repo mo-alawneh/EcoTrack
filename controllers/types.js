@@ -2,8 +2,8 @@ import Type from '../models/Type.js';
 
 export const addType = async (req, res, next) => { 
     try {
-        const { name, description, overall_category } = req.body;
-        const type = new Type(name, description, overall_category);
+        const { name, unit, description, overall_category } = req.body;
+        const type = new Type(name, unit, description, overall_category);
         const [result, _] = await type.addType();
         res.status(201).json(result);
 

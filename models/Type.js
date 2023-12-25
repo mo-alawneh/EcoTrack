@@ -18,10 +18,12 @@ class Type {
     /**
      * @param {string} name 
      * @param {string} descripton 
-     * @param {OverallCategory} overallCategory 
+     * @param {OverallCategory} overallCategory
+     * @param {string} unit
      */
-    constructor(name, descripton, overallCategory) {
+    constructor(name, unit, descripton, overallCategory) {
         this.name = name;
+        this.unit = unit;
         this.descripton = descripton;
         this.status = TypeStatus.DIRTY;
         //! check overall category
@@ -32,9 +34,9 @@ class Type {
         this.overallCategory = overallCategory;
     }
 
-    static async isThereSimilarTypes(name) {
-        let sql = /*sql*/`select * from types where name LIKE ?`;
-        const [result, _] = await db.execute(sql, [`%${name}%`]);
+    static async isThereSimilarTypes(name, unit) {
+        let sql = /*sql*/`select * from types where name LIKE ? and unit LIKE ?`;
+        const [result, _] = await db.execute(sql, [`%${name}%`, `%${unit}%`]);
         return result.length > 0;
     }
 
@@ -44,9 +46,10 @@ class Type {
 
         }
 
-        let sql = /*sql*/`insert into types(name, description, status, overall_category) values (?, ?, ?, ?)`;
+        let sql = /*sql*/`insert into types(name, unit, description, status, overall_category) values (?, ?, ?, ?, ?)`;
         return await db.execute(sql, [
             this.name,
+            this.unit,
             this.descripton,
             this.status,
             this.overallCategory
@@ -73,7 +76,7 @@ class Type {
      * @param {JSON} info 
      */
     static async updateType(id, info) {
-        const { name, description, status, overall_category } = info;
+        const { name, unit, description, status, overall_category } = info;
 
         let updateClauses = [];
 
@@ -84,6 +87,10 @@ class Type {
             }
             updateClauses.push({ field: 'name', value: name });
         }
+
+        if (unit !== undefined) { 
+            updateClauses.push({ field: 'unit', value: unit });
+        } 
 
         if (description !== undefined) {
             updateClauses.push({ field: 'description', value: description });
@@ -119,10 +126,14 @@ class Type {
     static async search(fields) {
         let query = /*sql*/`SELECT * FROM types WHERE 1`;
 
-        const { name, description, status, overall_category } = fields;
+        const { name, unit, description, status, overall_category } = fields;
 
         if (name !== undefined) {
             query += /*sql*/` AND name = ?`;
+        }
+
+        if (unit !== undefined) { 
+            query += /*sql*/` AND unit = ?`;
         }
 
         if (description !== undefined) {
