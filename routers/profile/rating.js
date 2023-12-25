@@ -4,12 +4,13 @@ import {
     calculateUserRating,
     getTopRatedUsers
 } from '../../controllers/rating.js';
+import authenticateUser from '../../middleware/authenticate.js';
 
 //! create a router
 const router = express.Router();
 
-router.post('/', rateUser);
-router.get('/:username', calculateUserRating);
+router.post('/', authenticateUser, rateUser);
+router.get('/:username',  authenticateUser, calculateUserRating);
 router.get('/', getTopRatedUsers);
 
 export default router;

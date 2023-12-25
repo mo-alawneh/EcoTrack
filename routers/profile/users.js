@@ -9,15 +9,17 @@ import {
     handleForgetPassword
 } from '../../controllers/users.js';
 
+import authenticateUser from '../../middleware/authenticate.js';
+
 //! create a router
 const router = express.Router();
 
-router.get('/', getAllUsers);
-router.get('/:username', getUserByUsername);
+router.get('/', authenticateUser, getAllUsers);
+router.get('/:username', authenticateUser, getUserByUsername);
 router.put('/:username', registerUser);
-router.delete('/:username', deleteUser);
-router.post('/:username', updateUserInfo);
-router.post('/', search);
+router.delete('/:username', authenticateUser, deleteUser);
+router.post('/:username', authenticateUser, updateUserInfo);
+router.post('/', authenticateUser, search);
 router.patch('/:username', handleForgetPassword);
 
 export default router;

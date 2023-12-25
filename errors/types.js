@@ -21,3 +21,11 @@ export class SimilarTypeWasAlreadyAddedError extends Error {
         Error.captureStackTrace(this, this.constructor);
     }
 }
+
+export class PermissionsError extends Error {
+    constructor(message = 'You do not have the required permissions to perform this action!') {
+        super(message);
+        this.name = this.constructor.name;
+        Error.captureStackTrace(this, this.constructor);
+    }
+}

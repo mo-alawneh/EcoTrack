@@ -68,7 +68,7 @@ export const search = async (req, res, next) => {
 }
 
 export const getAllDirtyTypes = async (req, res, next) => { 
-    const [types, _] = await Admin.getAllDirtyTypes();
+    const [types, _] = await Type.getAllDirtyTypes();
     if (types.length!= 0) {
         res.status(200).json(types);
 
@@ -80,12 +80,27 @@ export const getAllDirtyTypes = async (req, res, next) => {
 
 export const acceptType = async (req, res, next) => { 
     const id = req.params.id;
-    const [result, _] = await Admin.accpetType(id);
-    res.status(200).json(result);
+    const username = req.body.username;
+    try {
+        const [result, _] = await Type.accpetType(id, username);
+        res.status(200).json(result);
+
+    } catch (error) {
+        console.log(error);
+        res.status(403).json({ error: error.message }); //! Access denied
+
+    }
 };
 
 export const rejectType = async (req, res, next) => { 
     const id = req.params.id;
-    const [result, _] = await Admin.rejectType(id);
-    res.status(200).json(result);
+    const username = req.body.username;
+    try {
+        const [result, _] = await Admin.rejectType(id, username);
+        res.status(200).json(result);
+
+    } catch(error) {
+        res.status(403).json({ error: error.message }); //! Access denied
+        
+    }
 };

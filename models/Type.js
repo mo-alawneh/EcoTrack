@@ -1,6 +1,10 @@
 import { OverallCategory, TypeStatus } from '../enums/type.js';
+import { Permissions } from '../enums/user.js';
 import db from '../config/db.js';
-import { InvalidOverallCategory, SimilarTypeWasAlreadyAddedError } from '../errors/types.js';
+import { InvalidOverallCategory, 
+        SimilarTypeWasAlreadyAddedError,
+        PermissionsError } from '../errors/types.js';
+import User from '../models/User.js';
 
 class Type {
 
@@ -141,10 +145,20 @@ class Type {
         return await db.execute(sql, [TypeStatus.DIRTY]);
     }
 
+    static async getAllAcceptedTypes() {
+        let sql = /*sql*/`SELECT * FROM types WHERE status =?`;
+        return await db.execute(sql, [TypeStatus.ACCEPTED]);
+    }
+
     /**
      * @param {number} id 
      */
-    static async accpetType(id) {
+    static async accpetType(id, username) {
+        const [user, _] = await User.getUserByUsername(username);
+        if (user[0].permission != Permissions.ADMIN) {
+            throw new PermissionsError();
+
+        }
         let sql = /*sql*/`UPDATE types SET status = ? WHERE id = ?`;
         return await db.execute(sql, [TypeStatus.ACCEPTED, id]);
     }
@@ -152,7 +166,12 @@ class Type {
     /**
      * @param {number} id 
      */
-    static async rejectType(id) { 
+    static async rejectType(id, username) { 
+        const [user, _] = await User.getUserByUsername(username);
+        if (user[0].permission != Permissions.ADMIN) {
+            throw new PermissionsError();
+
+        }
         let sql = /*sql*/`UPDATE types SET status = ? WHERE id = ?`;
         return await db.execute(sql, [TypeStatus.REJECTED, id]);
     }

@@ -1,4 +1,4 @@
 export const AuthKeys = Object.freeze({
-    jwtSecretKey: 'eco-track',
-    jwtExpiresIn: '2M'
+    jwtSecretKey: 'eco_track',
+    jwtExpiresIn: '2h'
 });
