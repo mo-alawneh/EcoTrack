@@ -7,6 +7,14 @@ import { AddedToDirtyTypeError } from '../errors/types.js';
 import { InvalidSourceError } from '../errors/env-data.js';
 
 class EnvData {
+
+    /**
+     * @param {Source} source 
+     */
+    static isValidSource(source) { 
+        return source >= 1 && source <= Object.keys(source).length
+    }
+
     /**
      * @param {string} username 
      * @param {JSON} data 
@@ -18,10 +26,10 @@ class EnvData {
         this.username = username;
 
         const { type, value, source, description } = data;
-        if (source < 1 
-            || source > Object.keys(Source).length) {
-                throw new InvalidSourceError();
-            }
+        if (!EnvData.isValidSource(this.source)) {
+            throw new InvalidSourceError();
+
+        }
         this.type = type;
         this.value = value;
         this.source = source;
@@ -99,10 +107,10 @@ class EnvData {
 
         if (data) {
             const { type, value, source, description } = data;
-            if (source < 1 
-                || source > Object.keys(value).length) {
-                    throw new InvalidSourceError();
-                }
+            if (!EnvData.isValidSource(source)) {
+                throw new InvalidSourceError();
+    
+            }
 
             if (type !== undefined) {
                 if (await EnvData.isValidType(type)) {

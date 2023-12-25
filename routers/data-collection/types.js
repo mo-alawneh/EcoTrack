@@ -10,18 +10,19 @@ import {
     acceptType,
     rejectType
 } from '../../controllers/types.js';
+import authenticateUser from '../../middleware/authenticate.js';
 
 //! create a router
 const router = express.Router();
 
-router.get('/', getAllTypes);
-router.get('/dirty', getAllDirtyTypes);
-router.get('/:id', getTypeById);
-router.post('/', addType);
-router.delete('/:id', deleteType);
-router.post('/:id', updateType);
-router.patch('/', search);
-router.patch('/acceptance/:id', acceptType);
-router.patch('/rejection/:id', rejectType);
+router.get('/', authenticateUser, getAllTypes);
+router.get('/dirty',  authenticateUser, getAllDirtyTypes);
+router.get('/:id', authenticateUser, getTypeById);
+router.post('/', authenticateUser, addType);
+router.delete('/:id', authenticateUser, deleteType);
+router.post('/:id', authenticateUser, updateType);
+router.patch('/', authenticateUser, search);
+router.patch('/acceptance/:id', authenticateUser, acceptType);
+router.patch('/rejection/:id', authenticateUser, rejectType);
 
 export default router;

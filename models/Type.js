@@ -1,8 +1,20 @@
 import { OverallCategory, TypeStatus } from '../enums/type.js';
+import { Permissions } from '../enums/user.js';
 import db from '../config/db.js';
-import { InvalidOverallCategory, SimilarTypeWasAlreadyAddedError } from '../errors/types.js';
+import { InvalidOverallCategory, 
+        SimilarTypeWasAlreadyAddedError,
+        PermissionsError } from '../errors/types.js';
+import User from '../models/User.js';
 
 class Type {
+
+    /**
+     * @param {OverallCategory} overallCategory 
+     */
+    static isValidOverallCategory(overallCategory) { 
+        return overallCategory >= 1 && overallCategory <= Object.keys(overallCategory).length
+    }
+
     /**
      * @param {string} name 
      * @param {string} descripton 
@@ -13,8 +25,7 @@ class Type {
         this.descripton = descripton;
         this.status = TypeStatus.DIRTY;
         //! check overall category
-        if (overallCategory < 1 
-            || overallCategory > Object.keys(OverallCategory).length) {
+        if (!Type.isValidOverallCategory(this.overallCategory)) {
             throw new InvalidOverallCategory();
 
         }
@@ -83,10 +94,9 @@ class Type {
         }
 
         if (overall_category !== undefined) {
-            if (overall_category < 1 
-                || overall_category > Object.keys(OverallCategory).length) {
-                throw new InvalidOverallCategory(); 
-                
+            if (!Type.isValidOverallCategory(overall_category)) {
+                throw new InvalidOverallCategory();
+    
             }
             updateClauses.push({ field: 'overall_category', value: overall_category });
         }
@@ -135,10 +145,20 @@ class Type {
         return await db.execute(sql, [TypeStatus.DIRTY]);
     }
 
+    static async getAllAcceptedTypes() {
+        let sql = /*sql*/`SELECT * FROM types WHERE status =?`;
+        return await db.execute(sql, [TypeStatus.ACCEPTED]);
+    }
+
     /**
      * @param {number} id 
      */
-    static async accpetType(id) {
+    static async accpetType(id, username) {
+        const [user, _] = await User.getUserByUsername(username);
+        if (user[0].permission != Permissions.ADMIN) {
+            throw new PermissionsError();
+
+        }
         let sql = /*sql*/`UPDATE types SET status = ? WHERE id = ?`;
         return await db.execute(sql, [TypeStatus.ACCEPTED, id]);
     }
@@ -146,7 +166,12 @@ class Type {
     /**
      * @param {number} id 
      */
-    static async rejectType(id) { 
+    static async rejectType(id, username) { 
+        const [user, _] = await User.getUserByUsername(username);
+        if (user[0].permission != Permissions.ADMIN) {
+            throw new PermissionsError();
+
+        }
         let sql = /*sql*/`UPDATE types SET status = ? WHERE id = ?`;
         return await db.execute(sql, [TypeStatus.REJECTED, id]);
     }
