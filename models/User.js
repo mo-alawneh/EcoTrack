@@ -183,11 +183,7 @@ class User {
     }
 
     /**
-     * @param {JSON} name 
-     * @param {string} email 
-     * @param {Permissions} permission 
-     * @param {Category} category 
-     * @param {JSON} location 
+     * @param {JSON} fields
      */
     static async search(fields) {
         let query = /*sql*/`SELECT * FROM users WHERE 1`;
