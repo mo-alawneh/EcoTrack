@@ -1,14 +1,16 @@
 import EnvData from '../models/EnvData.js';
 import ExcelSheet from '../models/ExcelSheet.js';
+import { sendNotification } from './notification.js';
 
 export const addEnvData = async (req, res, next) => { 
     const username = req.body.username;
     const data = req.body.data;
     const collectedDateTime = req.body.collectedDateTime;
     const location = req.body.location;
-    const envData = new EnvData(username, data, collectedDateTime, location);
     try {
+        const envData = new EnvData(username, data, collectedDateTime, location);
         const [result, _] = await envData.addEnvData();
+        await sendNotification();
         res.status(201).json(result);
 
     } catch(error) {

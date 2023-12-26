@@ -12,7 +12,7 @@ class EnvData {
      * @param {Source} source 
      */
     static isValidSource(source) { 
-        return source >= 1 && source <= Object.keys(source).length
+        return source >= 1 && source <= Object.keys(Source).length
     }
 
     /**
@@ -26,7 +26,7 @@ class EnvData {
         this.username = username;
 
         const { type, value, source, description } = data;
-        if (!EnvData.isValidSource(this.source)) {
+        if (!EnvData.isValidSource(source)) {
             throw new InvalidSourceError();
 
         }
