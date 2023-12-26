@@ -5,7 +5,7 @@ export const verifyEmail = async (req, res, next) => {
     const verificationCode = await EmailVerifier.verifyEmail(email);
 
     if (verificationCode) {
-        res.status(200).json({message : 'Your verification code is on the email!'});
+        res.status(200).json({verificationCode: verificationCode});
 
     } else {
         res.status(500).json({message: 'Error during the verification'});

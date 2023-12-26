@@ -1,4 +1,6 @@
 import User from '../models/User.js';
+import EmailSender from '../services/EmailSender.js';
+import fs from 'fs';
 
 export const getAllUsers = async (req, res, next) => {
     const [users, _] = await User.getAllUsers();
@@ -84,9 +86,36 @@ export const search = async (req, res, next) => {
 }
 
 export const handleForgetPassword = async (req, res, next) => { 
-    const username = req.params.username;
-    const [result, _] = await User.handleForgetPassword(username);
-    if (result.affectedRows != 0) {
+    const username = req.body.username;
+    const { email, newPassword } = await User.handleForgetPassword(username);
+
+    //! Function to read the HTML content from the file
+    const readHtmlTemplate = filename => {
+        try {
+            return fs.readFileSync(filename, 'utf-8');
+
+        } catch (error) {
+            console.error('Error reading HTML template:', error);
+            return null;
+            
+        }
+    };
+
+    //! Read the HTML content from the file
+    const htmlTemplate = readHtmlTemplate('resources\\html\\new-password-email.html');
+
+    if (htmlTemplate) {
+
+        const emailOptions = {
+            to: email,
+            subject: 'New Password',
+            html: htmlTemplate.replace('{{newPassword}}', newPassword)
+        };
+        EmailSender.sendEmail(emailOptions);
+
+    }
+
+    if (email) { //! email not null
         res.status(200).json({message : 'Your new password is on the email!'});
 
     } else {

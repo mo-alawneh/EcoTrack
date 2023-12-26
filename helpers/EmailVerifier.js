@@ -1,25 +1,40 @@
 import CodeGenerator from './CodeGenerator.js';
 import EmailSender from '../services/EmailSender.js';
+import fs from 'fs';
+
+//! Function to read the HTML content from the file
+const readHtmlTemplate = filename => {
+    try {
+        return fs.readFileSync(filename, 'utf-8');
+
+    } catch (error) {
+        console.error('Error reading HTML template:', error);
+        return null;
+        
+    }
+};
 
 class EmailVerifer {
     /**
      * @param {string} email 
      */
     static async verifyEmail(email) {
-        //! 1- generate a verification code
-       const verificationCode = CodeGenerator.generateVerificationCode();
-       
-       //! 2- send the new password via email
-       const emailOptions = {
-           to: email,
-           subject: 'Verification Code',
-           text: `You verification code is ${verificationCode}`
-       }
-       EmailSender.sendEmail(emailOptions);
+        const verificationCode = CodeGenerator.generateVerificationCode();
+        //! Read the HTML content from the file
+        const htmlTemplate = readHtmlTemplate('resources\\html\\verification-email.html');
 
-       //! return it
-       return verificationCode;
-   }
+        if (htmlTemplate) {
+
+            const emailOptions = {
+                to: email,
+                subject: 'Verification Code',
+                html: htmlTemplate.replace('{{verificationCode}}', verificationCode)
+            };
+            EmailSender.sendEmail(emailOptions);
+
+            return verificationCode;
+        }
+    }
 }
 
 export default EmailVerifer;
