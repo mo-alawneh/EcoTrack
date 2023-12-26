@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+    }
+
+    h1 {
+      text-align: center;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 20px;
+    }
+
+    th, td {
+      border: 1px solid #dddddd;
+      text-align: center; /* Center the content */
+      padding: 10px;
+    }
+
+    th {
+      background-color: #f2f2f2;
+    }
+
+    .user-info {
+      margin-bottom: 20px;
+      width: 50%;
+      margin-left: auto;
+      margin-right: auto;
+      border: 1px solid #dddddd;
+    }
+
+    .user-info th, .user-info td {
+      border: 1px solid #dddddd;
+      padding: 10px;
+      text-align: left;
+      background-color: #f2f2f2;
+    }
+
+    .env-data-list {
+      list-style-type: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    .env-data-item {
+      margin-bottom: 10px;
+    }
+
+    .env-data-table th, .env-data-table td {
+      border: 1px solid #dddddd;
+      text-align: center; /* Center the content */
+      padding: 10px;
+    }
+
+    .env-data-table th {
+      background-color: #f4f4f4;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>User Report</h1>
+
+  <!-- User Info Table -->
+  <table class="user-info">
+    {{#userData}}
+      <tr>
+        <th>Username</th>
+        <td>{{username}}</td>
+      </tr>
+      <tr>
+        <th>Score</th>
+        <td>{{score}}</td>
+      </tr>
+      <tr>
+        <th>Average Rating</th>
+        <td>{{average_rating}}</td>
+      </tr>
+    {{/userData}}
+  </table>
+
+  <!-- Environmental Data Table -->
+  <table class="env-data-table">
+    <tr>
+      <th>Type</th>
+      <th>Value</th>
+      <th>Source</th>
+      <th>Description</th>
+      <th>Collected Date</th>
+      <th>Added Date</th>
+      <th>Country</th>
+      <th>City</th>
+      <th>Town</th>
+    </tr>
+
+    <!-- Loop through environmental data for each user -->
+    {{#userData}}
+      {{#envData}}
+        <tr class="env-data-item">
+          <td>{{type_name}}</td>
+          <td>{{value}}</td>
+          <td>{{source}}</td>
+          <td>{{description}}</td>
+          <td>{{collected_date_time}}</td>
+          <td>{{added_date}}</td>
+          <td>{{country}}</td>
+          <td>{{city}}</td>
+          <td>{{town}}</td>
+        </tr>
+      {{/envData}}
+    {{/userData}}
+
+  </table>
+
+</body>
+</html>

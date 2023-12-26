@@ -243,20 +243,16 @@ class User {
         //! 1- generate a new password
         const newPassword = CodeGenerator.generatePassword();
         
-        //! 2- send the new password via email
+        //! 2- get user email
         let sqlToGetEmail = /*sql*/`select email from users where username = ?`;
         const [user, _] = await db.execute(sqlToGetEmail, [username]);
-        console.log(user);
-        const emailOptions = {
-            to: user[0].email,
-            subject: 'New Password',
-            text: `You password has been updated to ${newPassword}`
-        }
-        EmailSender.sendEmail(emailOptions);
+        const email = user[0].email;
 
         //! 3- update the password in the database
         let sql = /*sql*/`update users set password = ? where username = ?`;
-        return await db.execute(sql, [createHash('sha256').update(newPassword).digest('hex'), username]);
+        await db.execute(sql, [createHash('sha256').update(newPassword).digest('hex'), username]);
+
+        return { email, newPassword }; 
     }
 
     /**

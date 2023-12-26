@@ -20,6 +20,6 @@ router.put('/:username', registerUser);
 router.delete('/:username', authenticateUser, deleteUser);
 router.post('/:username', authenticateUser, updateUserInfo);
 router.post('/', authenticateUser, search);
-router.patch('/:username', handleForgetPassword);
+router.patch('/new-password', handleForgetPassword);
 
 export default router;

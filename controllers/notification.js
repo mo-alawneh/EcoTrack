@@ -19,7 +19,7 @@ export const sendNotification = async () => {
 
     for (let i = 0; i < result.length; i++) {         
         //! Read the HTML content from the file
-        const htmlTemplate = readHtmlTemplate('resources\\notification-email.html');
+        const htmlTemplate = readHtmlTemplate('resources\\html\\notification-email.html');
 
         if (htmlTemplate) {
             //! Destructure attributes from the result[i] object

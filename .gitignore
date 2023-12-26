@@ -9,3 +9,6 @@ push-script.bat
 
 # Ignore the file of testing
 test.js
+
+# Ignore the folde that contains the reports
+out/

@@ -4,6 +4,7 @@ import dotenv from 'dotenv/config';
 import profileRouter from './routers/profile.js';
 import dataCollectionRouter from './routers/data-collection.js';
 import intrestsRouter from './routers/intrests.js';
+import reportsRouter from './routers/reports.js';
 
 //! app 
 const app = express();
@@ -21,3 +22,4 @@ app.listen(PORT, () => {
 app.use('/profile', profileRouter);
 app.use('/data-collection', dataCollectionRouter);
 app.use('/intrests', intrestsRouter);
+app.use('/reports', reportsRouter);
