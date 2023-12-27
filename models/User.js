@@ -93,6 +93,14 @@ class User {
     /**
      * @param {string} username 
      */
+    static async getUserPassword(username) {
+        let sql = /*sql*/`select password from users where username = ?`;
+        return await db.execute(sql, [username]);
+    }
+
+    /**
+     * @param {string} username 
+     */
     static async getUserByUsername(username) {
         let sql = /*sql*/`select username, first_name, middle_name, last_name, email, country, city, permission, category, birth_date, joined_at, score from users where username = ?`;
         return await db.execute(sql, [username]);
