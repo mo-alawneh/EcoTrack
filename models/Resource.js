@@ -1,5 +1,7 @@
-import db from '../config/db.js';
+    import db from '../config/db.js';
 import CurrentDateGenerator from '../helpers/CurrentDateGenerator.js';
+import User from './User.js';
+import { ScorePoints } from '../enums/score.js';
 
 class Resource {
 
@@ -18,6 +20,7 @@ class Resource {
     }
 
     async addResource() {
+        User.increaseScore(this.username, ScorePoints.ADDING_RESOURCE);
         let sql = /*sql*/ `INSERT INTO resources (username, title, description, link, date) VALUES (?, ?, ?, ?, ?)`;
         return await db.execute(sql, [this.username, this.title, this.description, this.link,
         CurrentDateGenerator.getCurrentDate()]);
