@@ -12,3 +12,6 @@ test.js
 
 # Ignore the folde that contains the reports
 out/
+
+# Ignore the file of external API keys
+config/api-keys.js
