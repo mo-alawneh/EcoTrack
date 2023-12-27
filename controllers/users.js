@@ -123,3 +123,8 @@ export const handleForgetPassword = async (req, res, next) => {
 
     }
 }
+
+export const getTopScoreUsers = async (req, res, next) => { 
+    const [users, _] = await User.getTopScoreUsers();
+    res.status(200).json(users);
+};

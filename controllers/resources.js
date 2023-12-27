@@ -78,3 +78,14 @@ export const search = async (req, res, next) => {
         
     }
 };
+
+export const getRecentResources = async (req, res, next) => { 
+    const [resources, _] = await Resource.getRecentResources();
+    if (resources.length!= 0) {
+        res.status(200).json(resources); 
+    
+    } else {
+        res.status(404).json({ message: 'No resources found' }); 
+        
+    }
+};

@@ -5,6 +5,8 @@ import profileRouter from './routers/profile.js';
 import dataCollectionRouter from './routers/data-collection.js';
 import intrestsRouter from './routers/intrests.js';
 import reportsRouter from './routers/reports.js';
+import submissionRouter from './routers/submission.js';
+import statsRouter from './routers/stats.js';
 
 //! app 
 const app = express();
@@ -23,3 +25,5 @@ app.use('/profile', profileRouter);
 app.use('/data-collection', dataCollectionRouter);
 app.use('/intrests', intrestsRouter);
 app.use('/reports', reportsRouter);
+app.use('/submission', submissionRouter);
+app.use('/stats', statsRouter);
