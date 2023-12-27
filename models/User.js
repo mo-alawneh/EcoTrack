@@ -54,11 +54,11 @@ class User {
 
         }
 
+        this.category = category;
         if (!User.isValidCategory(this.category)) {
             throw new InvalidCategoryError();
 
         }
-        this.category = category;
         const { country, city } = location;
         this.country = country;
         this.city = city;
@@ -86,7 +86,7 @@ class User {
     }
 
     static async getAllUsers() {
-        let sql = /*sql*/`select * from users`;
+        let sql = /*sql*/`select username, first_name, middle_name, last_name, email, country, city, permission, category, birth_date, joined_at, score from users`;
         return await db.execute(sql);
     }
 
@@ -94,7 +94,7 @@ class User {
      * @param {string} username 
      */
     static async getUserByUsername(username) {
-        let sql = /*sql*/`select * from users where username = ?`;
+        let sql = /*sql*/`select username, first_name, middle_name, last_name, email, country, city, permission, category, birth_date, joined_at, score from users where username = ?`;
         return await db.execute(sql, [username]);
     }
 
@@ -104,7 +104,7 @@ class User {
     static async deleteUser(username) {
         //! if id refers to an admin
         const [result, _] = await this.getUserByUsername(username);
-        if (result[0].category == Permissions.ADMIN) 
+        if (result[0].permission == Permissions.ADMIN) 
             throw new AdminCannotBeRemovedError();
 
         let sql = /*sql*/`delete from users where username = ?`;
@@ -186,50 +186,60 @@ class User {
      * @param {JSON} fields
      */
     static async search(fields) {
-        let query = /*sql*/`SELECT * FROM users WHERE 1`;
-
-        const {name, username, email, permission, category, location } = fields;
-        
+        let query = /*sql*/`SELECT username, first_name, middle_name, last_name, email, country, city, permission, category, birth_date, joined_at, score FROM users WHERE 1`;
+    
+        const { name, username, email, permission, category, location } = fields;
+        const values = [];
+    
         if (name) {
             const { firstName, middleName, lastName } = name || {};
             if (firstName) {
                 query += /*sql*/` AND first_name = ?`;
+                values.push(firstName);
             }
             if (middleName) {
                 query += /*sql*/` AND middle_name = ?`;
+                values.push(middleName);
             }
             if (lastName) {
                 query += /*sql*/` AND last_name = ?`;
+                values.push(lastName);
             }
         }
-
+    
         if (username) {
             query += /*sql*/` AND username = ?`;
+            values.push(username);
         }
-
+    
         if (email) {
             query += /*sql*/` AND email = ?`;
+            values.push(email);
         }
-
+    
         if (permission) {
             query += /*sql*/` AND permission = ?`;
+            values.push(permission);
         }
-
+    
         if (category) {
             query += /*sql*/` AND category = ?`;
+            values.push(category);
         }
-
+    
         if (location) {
             const { country, city } = location;
             if (country) {
                 query += /*sql*/` AND country = ?`;
+                values.push(country);
             }
             if (city) {
                 query += /*sql*/` AND city = ?`;
+                values.push(city);
             }
         }
-
-        return await db.execute(query);
+    
+        return await db.execute(query, values);
     }
 
     /**

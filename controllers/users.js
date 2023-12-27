@@ -16,7 +16,7 @@ export const getUserByUsername = async (req, res, next) => {
     const username = req.params.username;
     const [user, _] = await User.getUserByUsername(username);
     if (user.length != 0) {
-        res.status(200).json(user);
+        res.status(200).json(user[0]);
 
     } else {
         res.status(404).json({message: 'User not found!'});
@@ -38,7 +38,7 @@ export const registerUser = async (req, res, next) => {
         );
 
         const [result, _] = await user.registerUser();
-        res.status(201).json(result);
+        res.status(201).json( {message : 'User is registered successfully!'} );
 
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -63,7 +63,7 @@ export const updateUserInfo = async (req, res, next) => {
         const username = req.params.username;
         const info = req.body;
         const [result, _] = await User.updateUserInfo(username, info);
-        res.status(200).json(result);
+        res.status(200).json( {message : 'User info are updated successfully!'} );
 
     } catch(error) {
         res.status(400).json({ error: error.message });
