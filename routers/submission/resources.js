@@ -6,7 +6,8 @@ import { addResource,
         getResourceById,
         deleteResource,
         updateResource,
-        search} from '../../controllers/resources.js';
+        search, 
+        getRecentResources } from '../../controllers/resources.js';
 
 //! create a router
 const router = express.Router();
@@ -19,5 +20,6 @@ router.post('/:id', getResourceById);
 router.delete('/:id', deleteResource);
 router.patch('/:id', updateResource);
 router.patch('/', search);
+router.get('/recent', getRecentResources);
 
 export default router;

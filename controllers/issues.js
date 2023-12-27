@@ -83,3 +83,14 @@ export const search = async (req, res, next) => {
         
     }
 };
+
+export const getRecentIssues = async (req, res, next) => { 
+    const [issues, _] = await Issue.getRecentIssues();
+    if (issues.length!= 0) {
+        res.status(200).json(issues); 
+    
+    } else {
+        res.status(404).json({message : 'No issues found'}); 
+        
+    }
+};

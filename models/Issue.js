@@ -4,6 +4,7 @@ import db from '../config/db.js';
 import CurrentDateGenerator from '../helpers/CurrentDateGenerator.js';
 import User from './User.js';
 import { ScorePoints } from '../enums/score.js';
+import { RecentlyAdded } from '../enums/recently-added.js';
 
 class Issue {
     /**
@@ -171,6 +172,14 @@ class Issue {
         }
 
         return await db.execute(query);
+    }
+
+    static async getRecentIssues() {
+        let sql = /*sql*/`
+            SELECT * FROM issues
+            ORDER BY date DESC
+            LIMIT ?`;
+        return await db.execute(sql, [RecentlyAdded.ISSUES]);
     }
 
 }
