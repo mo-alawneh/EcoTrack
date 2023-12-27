@@ -93,4 +93,4 @@ export const getRecentIssues = async (req, res, next) => {
         res.status(404).json({message : 'No issues found'}); 
         
     }
-};
+}
