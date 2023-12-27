@@ -6,12 +6,15 @@ Eco-Track is a project developed as part of the Advanced Software Engineering co
 Eco-Track is a RESTful API designed for eco-tracking, offering a comprehensive set of features:
 
 1. **User Profiles**: Manage user profiles efficiently.
-2. **Data Collection**: Gather and organize environmental data.
+2. **Data Collection**: Gather and organize environmental data. Also, using a Excel-Sheet.
 3. **Rating System**: Implement a rating system for environmental aspects.
 4. **Scoring System**: Calculate and manage environmental scores.
 5. **Notification Service**: Facilitate communication through a notification service.
 6. **Open Access for Researchers**: Provide open access to data for researchers.
 7. **External API Integration**: Seamlessly integrate with external APIs for enhanced functionality.
+8. **Reporting Issues**: Users can report about environmental issues.
+9. **Submitting Educational Resources**: Users can add some recommended resources for educational purposes.
+10. **Generating Reports**: Users can generate reports about their stats.
 
 ## Tools
 Eco-Track is built using the following tools and technologies:
