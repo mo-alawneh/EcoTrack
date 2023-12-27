@@ -6,7 +6,8 @@ import { addIssue,
         getIssueById,
         deleteIssue,
         updateIssueInfo,
-        search } from '../../controllers/issues.js';
+        search,
+        getRecentIssues } from '../../controllers/issues.js';
 
 //! create a router
 const router = express.Router();
@@ -19,5 +20,6 @@ router.post('/:id', getIssueById);
 router.delete('/:id', deleteIssue);
 router.patch('/:id', updateIssueInfo);
 router.patch('/', search);
+router.get('/recent', getRecentIssues);
 
 export default router;
