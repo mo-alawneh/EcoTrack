@@ -12,6 +12,7 @@ const authenticateUser = (req, res, next) => {
 
   if (revokedTokens.has(token)) {
     return res.status(401).json({ message: 'Token has been revoked' });
+    
   }
 
   jwt.verify(token, AuthKeys.jwtSecretKey, (err, decoded) => {
