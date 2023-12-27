@@ -7,6 +7,7 @@ import intrestsRouter from './routers/intrests.js';
 import reportsRouter from './routers/reports.js';
 import submissionRouter from './routers/submission.js';
 import statsRouter from './routers/stats.js';
+import externalRouter from './routers/external.js';
 
 //! app 
 const app = express();
@@ -27,3 +28,4 @@ app.use('/intrests', intrestsRouter);
 app.use('/reports', reportsRouter);
 app.use('/submission', submissionRouter);
 app.use('/stats', statsRouter);
+app.use('/external', externalRouter);
