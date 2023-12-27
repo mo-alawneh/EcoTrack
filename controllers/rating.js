@@ -22,3 +22,8 @@ export const getTopRatedUsers = async (req, res, next) => {
     const result = await Rating.getTopRatedUsers();
     res.status(200).json(result);
 };
+
+export const countRatingClasses = async (req, res, next) => {
+    const result = await Rating.countRatingClasses();
+    res.status(200).json(result);
+};

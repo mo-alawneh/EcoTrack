@@ -74,6 +74,34 @@ class Rating {
         return await db.execute(sql, [TopUsers.TOP_USERS_NUM]);
     }
 
+    static async countRatingClasses() {
+        let sql = /*sql*/`
+            SELECT AVG(rating) AS average_rating, COUNT(*) AS user_count
+            FROM ratings
+            GROUP BY rated_username;
+        `;
+
+        const [result, _] = await db.execute(sql);
+
+        let ratingCounts = {
+            1: 0,
+            2: 0,
+            3: 0,
+            4: 0,
+            5: 0,
+        };
+
+        result.forEach(row => {
+            const averageRating = row.average_rating;
+            const roundedRating = Math.round(averageRating);
+
+            if (roundedRating >= 1 && roundedRating <= 5) {
+                ratingCounts[roundedRating] += row.user_count;
+            }
+        });
+
+        return ratingCounts;
+    }
 }
 
 export default Rating;
