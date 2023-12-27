@@ -1,4 +1,4 @@
-    import db from '../config/db.js';
+import db from '../config/db.js';
 import CurrentDateGenerator from '../helpers/CurrentDateGenerator.js';
 import User from './User.js';
 import { ScorePoints } from '../enums/score.js';
