@@ -1,6 +1,8 @@
 import db from '../config/db.js';
 import { InvalidRateError } from '../errors/rating.js';
 import { RatingLimitations, TopUsers } from '../enums/rating.js';
+import User from './User.js';
+import { ScorePoints } from '../enums/score.js';
 
 class Rating {
     /**
@@ -19,6 +21,14 @@ class Rating {
     static async rateUser(ratedUsername, raterUsername, rating) {
         if (!Rating.isValidRate(rating)) {
             throw new InvalidRateError();
+        }
+
+        if (rating == MAX_RATING) { 
+            User.increaseScore(ratedUsername, ScorePoints.RATED_MAX_STARS);
+
+        } else if (rating == MIN_RATING) {
+            User.increaseScore(ratedUsername, ScorePoints.RATED_MIN_STARS);
+
         }
 
         let sql = /*sql*/`

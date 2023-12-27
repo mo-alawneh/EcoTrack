@@ -11,6 +11,5 @@ const router = express.Router();
 
 router.post('/', authenticateUser, rateUser);
 router.get('/:username',  authenticateUser, calculateUserRating);
-router.get('/', getTopRatedUsers);
 
 export default router;

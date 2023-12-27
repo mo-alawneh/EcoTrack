@@ -8,7 +8,7 @@ import { InvalidPermissionError,
         WeakPasswordError } from '../errors/user.js';
 import PasswordChecker from '../helpers/PasswordChecker.js';
 import CodeGenerator from '../helpers/CodeGenerator.js';
-import EmailSender from '../services/EmailSender.js';
+import { TopUsers } from '../enums/score.js';
 
 class User {
 
@@ -257,6 +257,16 @@ class User {
     static async increaseScore(username, points) {
         let sql = /*sql*/`update users set score = score + ? where username = ?`;
         return await db.execute(sql, [points, username]);
+    }
+
+    static async getTopScoreUsers() {
+        let sql = /*sql*/`
+        SELECT username, score
+        FROM users
+        ORDER BY score DESC
+        LIMIT ?`;
+
+        return await db.execute(sql, [TopUsers.TOP_USERS_NUM]);
     }
 }
 

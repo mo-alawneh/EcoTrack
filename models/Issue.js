@@ -2,6 +2,8 @@ import { Assessment } from '../enums/issue.js';
 import { InvalidAssessmentError } from '../errors/issue.js';
 import db from '../config/db.js';
 import CurrentDateGenerator from '../helpers/CurrentDateGenerator.js';
+import User from './User.js';
+import { ScorePoints } from '../enums/score.js';
 
 class Issue {
     /**
@@ -33,6 +35,7 @@ class Issue {
     }
 
     async addIssue() {
+        User.increaseScore(this.username, ScorePoints.ADDING_ISSUE);
         const { country, city, town } = this.location;
         let sql = /*sql*/`insert into issues (name, description, country, city, town, assessment, username, date) values (?, ?, ?, ?, ?, ?, ?, ?)`;
         return await db.execute(sql, [this.name,

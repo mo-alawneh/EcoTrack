@@ -5,6 +5,8 @@ import { TypeStatus } from '../enums/type.js';
 import { Source } from '../enums/env-data.js';
 import { AddedToDirtyTypeError } from '../errors/types.js';
 import { InvalidSourceError } from '../errors/env-data.js';
+import User from './User.js';
+import { ScorePoints } from '../enums/score.js';
 
 class EnvData {
 
@@ -58,7 +60,7 @@ class EnvData {
             throw new AddedToDirtyTypeError();
 
         }
-
+        User.increaseScore(this.username, ScorePoints.ADDING_ENV_DATA);
         let sql = /*sql*/`insert into env_data values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`;
         return await db.execute(sql, [
             this.id,
