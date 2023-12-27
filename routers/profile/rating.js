@@ -2,7 +2,8 @@ import express from 'express';
 import {
     rateUser,
     calculateUserRating,
-    getTopRatedUsers
+    getTopRatedUsers,
+    countRatingClasses
 } from '../../controllers/rating.js';
 import authenticateUser from '../../middleware/authenticate.js';
 
@@ -11,5 +12,7 @@ const router = express.Router();
 
 router.post('/', authenticateUser, rateUser);
 router.get('/:username',  authenticateUser, calculateUserRating);
+router.get('/top', getTopRatedUsers);
+router.get('/classes', countRatingClasses); 
 
 export default router;
