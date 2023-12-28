@@ -23,10 +23,10 @@ class Rating {
             throw new InvalidRateError();
         }
 
-        if (rating == MAX_RATING) { 
+        if (rating == RatingLimitations.MAX_RATING) { 
             User.increaseScore(ratedUsername, ScorePoints.RATED_MAX_STARS);
 
-        } else if (rating == MIN_RATING) {
+        } else if (rating == RatingLimitations.MIN_RATING) {
             User.increaseScore(ratedUsername, ScorePoints.RATED_MIN_STARS);
 
         }
