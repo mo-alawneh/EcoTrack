@@ -3,7 +3,7 @@ import Rating from '../models/Rating.js';
 export const rateUser = async (req, res, next) => { 
     try {
         const { ratedUsername, raterUsername, rating } = req.body;
-        const result = await Rating.rateUser(ratedUsername, raterUsername, rating);
+        await Rating.rateUser(ratedUsername, raterUsername, rating);
         res.status(201).json( { message : 'User is rated successfully!' } );
 
     } catch (error) {
