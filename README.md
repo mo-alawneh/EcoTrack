@@ -25,6 +25,7 @@ Eco-Track is built using the following tools and technologies:
 4. **Postman**: API development and testing tool for efficient collaboration.
 5. **GitHub**: Version control platform for collaborative software development.
 6. **VsCode**: Visual Studio Code, a lightweight code editor for efficient coding.
+7. **Wiki.js**: Open Source Documentation Tool integrated with GitHub.
 
 ## Team
 The Eco-Track project was developed by the following team members:
