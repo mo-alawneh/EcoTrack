@@ -9,9 +9,9 @@ export const addEnvData = async (req, res, next) => {
     const location = req.body.location;
     try {
         const envData = new EnvData(username, data, collectedDateTime, location);
-        const [result, _] = await envData.addEnvData();
+        await envData.addEnvData();
         await sendNotification();
-        res.status(201).json(result);
+        res.status(201).json( { message : 'The recored has been added successfully! '} );
 
     } catch(error) {
         res.status(400).json({ error: error.message });
@@ -21,18 +21,36 @@ export const addEnvData = async (req, res, next) => {
 
 export const getAllEnvData = async (req, res, next) => {
     const [result, _] = await EnvData.getAllEnvData();
-    res.status(200).json(result);
+    if (result.length != 0) {
+        res.status(200).json(result);
+
+    } else {
+        res.status(404).json({ message: 'No records found!' });
+        
+    }
 };
 
 export const getUserEnvData = async (req, res, next) => { 
     const username = req.params.username;
     const [result, _] = await EnvData.getUserEnvData(username);
-    if (result !== 0) {
+    if (result.length !== 0) {
         res.status(200).json(result);
 
     } else {
         res.status(404).json({ message: 'User has no records!' });
 
+    }
+};
+
+export const getEnvDataById = async (req, res, next) => { 
+    const id = req.params.id;
+    const [result, _] = await EnvData.getEnvDataById(id);
+    if (result.length !== 0) {
+        res.status(200).json(result[0]); 
+    
+    } else {
+        res.status(404).json({ message: 'EnvData not found!' });
+        
     }
 };
 
@@ -46,8 +64,8 @@ export const updateEnvData = async (req, res, next) => {
     const id = req.params.id;
     const info = req.body;
     try {
-        const [result, _] = await EnvData.updateEnvData(id, info);
-        res.status(200).json(result);
+        await EnvData.updateEnvData(id, info);
+        res.status(200).json( { message : 'The record has been updated successfully! '} );
 
     } catch (error) {
         res.status(400).json({ error: error.message });
@@ -56,13 +74,19 @@ export const updateEnvData = async (req, res, next) => {
 };
 
 export const search = async (req, res, next) => {
-    const fields = req.body;
-    const [result, _] = await EnvData.search(fields);
-    if (result.length!= 0) {
-        res.status(200).json(result);
-    
-    } else {
-        res.status(404).json({ message: 'EnvData not found!' });
+    try {
+        const fields = req.body;
+        const [result, _] = await EnvData.search(fields);
+        if (result.length!= 0) {
+            res.status(200).json(result);
+        
+        } else {
+            res.status(404).json({ message: 'EnvData not found!' });
+            
+        }
+
+    } catch (error) { 
+        res.status(400).json({ error: error.message });
         
     }
 };

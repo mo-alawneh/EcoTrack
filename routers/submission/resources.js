@@ -9,17 +9,19 @@ import { addResource,
         search, 
         getRecentResources } from '../../controllers/resources.js';
 
+import authenticateUser from '../../middleware/authenticate.js';
+
 //! create a router
 const router = express.Router();
 
 //! TRADE-OFF: violate methods best-practice vs. long URIs :)
-router.post('/', addResource);
-router.get('/', getAllResources);
-router.get('/:username', getAllUserResources);
-router.post('/:id', getResourceById);
-router.delete('/:id', deleteResource);
-router.patch('/:id', updateResource);
-router.patch('/', search);
-router.get('/recent', getRecentResources);
+router.post('/', authenticateUser, addResource);
+router.get('/', authenticateUser, getAllResources);
+router.get('/:username', authenticateUser, getAllUserResources);
+router.get('/specific/:id', authenticateUser, getResourceById);
+router.delete('/:id', authenticateUser, deleteResource);
+router.patch('/:id', authenticateUser, updateResource);
+router.patch('/', authenticateUser, search);
+router.get('/time/recent', authenticateUser, getRecentResources);
 
 export default router;

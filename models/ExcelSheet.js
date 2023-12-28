@@ -39,19 +39,18 @@ class ExcelSheet {
                 town: excelData[i].town
             };
 
-            //! generate EnvData object
-            const envData = new EnvData(this.username,
-                                        data,
-                                        excelData[i].collected_date_time,
-                                        location);
-            
-            //! try to add it
             try {
+                //! generate EnvData object
+                const envData = new EnvData(this.username,
+                data,
+                excelData[i].collected_date_time,
+                location);
+
+                //! try to add it
                 envData.addEnvData(envData);
 
-            } catch(error) {
-                throw error;
-
+            } catch (error) {
+                throw new Error(error.message);
             }
         }
     }

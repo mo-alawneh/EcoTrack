@@ -72,16 +72,21 @@ export const updateUserInfo = async (req, res, next) => {
 };
 
 export const search = async (req, res, next) => { 
-    const fields = req.body;
+    try {
+        const fields = req.body;
+        const [users, _] = await User.search(fields);
 
-    const [users, _] = await User.search(fields);
+        if (users.length!= 0) {  
+            res.status(200).json(users); 
 
-    if (users.length!= 0) {  
-        res.status(200).json(users); 
+        } else {
+            res.status(404).json({message: 'User not found!'});
 
-    } else {
-        res.status(404).json({message: 'User not found!'});
+        }
 
+    } catch (error) { 
+        res.status(400).json({ error: error.message });
+        
     }
 }
 

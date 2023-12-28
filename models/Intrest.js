@@ -92,44 +92,51 @@ class Intrest {
         const setStatements = updateClauses.map(({ field }) => `${field} = ?`).join(', ');
         const values = updateClauses.map(({ value }) => value);
     
-        const sql = `UPDATE Interests SET ${setStatements} WHERE id = ?`;
+        const sql = `UPDATE Intrests SET ${setStatements} WHERE id = ?`;
         return await db.execute(sql, [...values, id]);
     }
 
     /**
-     * @param {JSON} fields 
+     * @param {Object} fields - The search criteria.
      */
     static async search(fields) {
-        let query = /*sql*/`SELECT * FROM Interests WHERE 1`;
-    
+        let query = /*sql*/`SELECT * FROM intrests WHERE 1`;
+        const values = [];
+
         const { typeId, threshold, location } = fields;
-    
+
         if (typeId !== undefined) {
             query += /*sql*/` AND type_id = ?`;
+            values.push(typeId);
         }
-    
+
         if (threshold !== undefined) {
             query += /*sql*/` AND threshold = ?`;
+            values.push(threshold);
         }
-    
-        if (location !== undefined) {
-            const { country, city, street } = location;
-    
+
+        if (location !== undefined && typeof location === 'object') {
+            const { country, city, town } = location;
+
             if (country !== undefined) {
                 query += /*sql*/` AND country = ?`;
+                values.push(country);
             }
-    
+
             if (city !== undefined) {
                 query += /*sql*/` AND city = ?`;
+                values.push(city);
             }
-    
-            if (street !== undefined) {
-                query += /*sql*/` AND street = ?`;
+
+            if (town !== undefined) {
+                query += /*sql*/` AND town = ?`;
+                values.push(street);
             }
         }
-    
-        return await db.execute(query, Object.values(fields).filter(value => value !== undefined));
+
+        return await db.execute(query, values);
     }
+
     
 }
 

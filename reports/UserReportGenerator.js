@@ -78,6 +78,4 @@ class UserReportGenerator {
     }
 }
 
-UserReportGenerator.getUserReport('mo-alawneh');
-
 export default UserReportGenerator;
