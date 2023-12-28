@@ -32,5 +32,5 @@ export const revokedTokens = new Set();
 
 export const logout = async (req, res, next) => { 
     revokedTokens.add(req.headers.authorization);
-    res.status(200).json({ message: 'Logout successful' });
+    res.status(200).json({ message: 'Logout successfully' });
 };
