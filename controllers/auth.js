@@ -5,11 +5,9 @@ import { createHash } from 'crypto';
 
 export const login = async (req, res, next) => { 
     const { username, password } = req.body;
-    console.log(username, password);
 
     //! check the username
     const [user, _] = await User.getUserPassword(username);
-    console.log(user);
     if (user.length == 0) {
         return res.status(401).json({ error: 'Invalid username!' });
 

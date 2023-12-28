@@ -7,6 +7,7 @@ import {
     updateType,
     search,
     getAllDirtyTypes,
+    getAllAcceptedTypes,
     acceptType,
     rejectType
 } from '../../controllers/types.js';
@@ -17,6 +18,7 @@ const router = express.Router();
 
 router.get('/', authenticateUser, getAllTypes);
 router.get('/dirty',  authenticateUser, getAllDirtyTypes);
+router.get('/accepted', authenticateUser, getAllAcceptedTypes);
 router.get('/:id', authenticateUser, getTypeById);
 router.post('/', authenticateUser, addType);
 router.delete('/:id', authenticateUser, deleteType);

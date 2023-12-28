@@ -12,7 +12,7 @@ class Type {
      * @param {OverallCategory} overallCategory 
      */
     static isValidOverallCategory(overallCategory) { 
-        return overallCategory >= 1 && overallCategory <= Object.keys(overallCategory).length
+        return overallCategory >= 1 && overallCategory <= Object.keys(OverallCategory).length
     }
 
     /**
@@ -26,12 +26,12 @@ class Type {
         this.unit = unit;
         this.descripton = descripton;
         this.status = TypeStatus.DIRTY;
+        this.overallCategory = overallCategory;
         //! check overall category
         if (!Type.isValidOverallCategory(this.overallCategory)) {
             throw new InvalidOverallCategory();
 
         }
-        this.overallCategory = overallCategory;
     }
 
     static async isThereSimilarTypes(name, unit) {
@@ -41,7 +41,7 @@ class Type {
     }
 
     async addType() {
-        if (await Type.isThereSimilarTypes(this.name)) { 
+        if (await Type.isThereSimilarTypes(this.name, this.unit)) { 
             throw new SimilarTypeWasAlreadyAddedError();
 
         }
