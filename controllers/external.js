@@ -13,7 +13,7 @@ export const fetchWeather = async (req, res, next) => {
             return getWeather(coordinates);
         })
         .then(weatherData => {
-            res.status(200).json(weatherData);
+            res.status(200).json(weatherData.data[0]);
         })
         .catch(error => {
             res.status(400).json( { error : error.message } );

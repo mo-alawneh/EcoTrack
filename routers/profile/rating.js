@@ -12,7 +12,6 @@ const router = express.Router();
 
 router.post('/', authenticateUser, rateUser);
 router.get('/specific/:username',  authenticateUser, calculateUserRating);
-router.get('/top', getTopRatedUsers);
 router.get('/classes', countRatingClasses); 
 
 export default router;

@@ -52,9 +52,9 @@ class Issue {
         return await db.execute(sql);
     }
 
-    static async getAllUserIssues() {
+    static async getAllUserIssues(username) {
         let sql = /*sql*/`select * from issues where username = ?`;
-        return await db.execute(sql, [this.username]);
+        return await db.execute(sql, [username]);
     }
 
     /**
@@ -131,48 +131,58 @@ class Issue {
     }
 
     /**
-     * @param {JSON} fields
+     * @param {Object} fields - The search criteria.
      */
     static async search(fields) {
         let query = /*sql*/`SELECT * FROM issues WHERE 1`;
+        const values = [];
 
         const { name, username, description, assessment, location, date } = fields;
 
         if (name) {
             query += /*sql*/` AND name LIKE ?`;
+            values.push(`%${name}%`);
         }
 
         if (username) {
             query += /*sql*/` AND username = ?`;
+            values.push(username);
         }
 
         if (description) {
             query += /*sql*/` AND description LIKE ?`;
+            values.push(`%${description}%`);
         }
 
         if (assessment) {
             query += /*sql*/` AND assessment = ?`;
+            values.push(assessment);
         }
 
         if (location && typeof location === 'object') {
             const { country, city, town } = location;
             if (country) {
                 query += /*sql*/` AND country LIKE ?`;
+                values.push(`%${country}%`);
             }
             if (city) {
                 query += /*sql*/` AND city LIKE ?`;
+                values.push(`%${city}%`);
             }
             if (town) {
                 query += /*sql*/` AND town LIKE ?`;
+                values.push(`%${town}%`);
             }
         }
 
         if (date) {
             query += /*sql*/` AND date = ?`;
+            values.push(date);
         }
 
-        return await db.execute(query);
+        return await db.execute(query, values);
     }
+
 
     static async getRecentIssues() {
         let sql = /*sql*/`

@@ -49,14 +49,15 @@ class EnvData {
     /**
      * @param {string} type 
      */
-    static async isValidType(type) {
+    static async isDirtyType(type) {
         let sql = /*sql*/ `select status from types where id = ?`;
         const [result, _] = await db.execute(sql, [type]);
+        console.log(result[0].status);
         return result[0].status == TypeStatus.DIRTY;
     }
 
     async addEnvData() {
-        if (await EnvData.isValidType(this.type)) {
+        if (await EnvData.isDirtyType(this.type)) {
             throw new AddedToDirtyTypeError();
 
         }
@@ -92,6 +93,15 @@ class EnvData {
 
     /**
      * @param {string} id 
+     *
+     */
+    static async getEnvDataById(id) {
+        let sql = /*sql*/`select * from env_data where id = ?`;
+        return await db.execute(sql, [id]);
+    }
+
+    /**
+     * @param {string} id 
      */
     static async deleteEnvData(id) {
         let sql = /*sql*/`delete from env_data where id = ?`;
@@ -109,28 +119,28 @@ class EnvData {
 
         if (data) {
             const { type, value, source, description } = data;
-            if (!EnvData.isValidSource(source)) {
-                throw new InvalidSourceError();
-    
-            }
 
-            if (type !== undefined) {
-                if (await EnvData.isValidType(type)) {
+            if (type) {
+                if (await EnvData.isDirtyType(type)) {
                     throw new AddedToDirtyTypeError();
         
                 }
                 updateClauses.push({ field: 'type', value: type });
             }
 
-            if (value !== undefined) {
+            if (value) {
                 updateClauses.push({ field: 'value', value: value });
             }
 
-            if (source !== undefined) {
+            if (source) {
+                if (!EnvData.isValidSource(source)) {
+                    throw new InvalidSourceError();
+        
+                }
                 updateClauses.push({ field: 'source', value: source });
             }
 
-            if (description !== undefined) {
+            if (description) {
                 updateClauses.push({ field: 'description', value: description });
             }
         }
@@ -138,7 +148,7 @@ class EnvData {
         if (dates) {
             const { collectedDateTime } = dates;
 
-            if (collectedDateTime !== undefined) {
+            if (collectedDateTime) {
                 updateClauses.push({ field: 'collected_date_time', value: collectedDateTime });
             }
         }
@@ -146,15 +156,15 @@ class EnvData {
         if (location) {
             const { country, city, town } = location;
 
-            if (country !== undefined) {
+            if (country) {
                 updateClauses.push({ field: 'country', value: country });
             }
 
-            if (city !== undefined) {
+            if (city) {
                 updateClauses.push({ field: 'city', value: city });
             }
 
-            if (town !== undefined) {
+            if (town) {
                 updateClauses.push({ field: 'town', value: town });
             }
         }
@@ -172,15 +182,17 @@ class EnvData {
     }
 
     /**
-     * @param {JSON} fields 
+     * @param {Object} fields - The search criteria.
      */
     static async search(fields) {
         let query = /*sql*/`SELECT * FROM env_data WHERE 1`;
 
         const { username, data, dates, location } = fields;
+        const values = [];
 
         if (username) {
             query += /*sql*/` AND username = ?`;
+            values.push(username);
         }
 
         if (data) {
@@ -188,18 +200,22 @@ class EnvData {
 
             if (type !== undefined) {
                 query += /*sql*/` AND type = ?`;
+                values.push(type);
             }
 
             if (value !== undefined) {
                 query += /*sql*/` AND value = ?`;
+                values.push(value);
             }
 
             if (source !== undefined) {
                 query += /*sql*/` AND source = ?`;
+                values.push(source);
             }
 
             if (description !== undefined) {
                 query += /*sql*/` AND description = ?`;
+                values.push(description);
             }
         }
 
@@ -208,10 +224,12 @@ class EnvData {
 
             if (addedDate !== undefined) {
                 query += /*sql*/` AND added_date = ?`;
+                values.push(addedDate);
             }
 
             if (collectedDateTime !== undefined) {
                 query += /*sql*/` AND collected_date_time = ?`;
+                values.push(collectedDateTime);
             }
         }
 
@@ -220,21 +238,23 @@ class EnvData {
 
             if (country !== undefined) {
                 query += /*sql*/` AND country = ?`;
+                values.push(country);
             }
 
             if (city !== undefined) {
                 query += /*sql*/` AND city = ?`;
+                values.push(city);
             }
 
             if (town !== undefined) {
                 query += /*sql*/` AND town = ?`;
+                values.push(town);
             }
         }
 
         // Use appropriate table name in the query
-        return await db.execute(query, Object.values(fields).filter(value => value !== undefined));
+        return await db.execute(query, values);
     }
-
 }
 
 export default EnvData;

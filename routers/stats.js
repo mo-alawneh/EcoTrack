@@ -8,7 +8,7 @@ import authenticateUser from '../middleware/authenticate.js';
 const router = express.Router();
 
 router.get('/time', getTimeStatistics);
-router.get('/time/:username', getUserTimeStatistics);
+router.get('/time/:username', authenticateUser, getUserTimeStatistics);
 router.get('/rating', getTopRatedUsers);
 router.get('/score', getTopScoreUsers);
 

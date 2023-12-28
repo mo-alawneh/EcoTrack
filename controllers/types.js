@@ -56,13 +56,19 @@ export const updateType = async (req, res, next) => {
 }
 
 export const search = async (req, res, next) => {
-    const fields = req.body;
-    const [types, _] = await Type.search(fields);
-    if (types.length != 0) {
-        res.status(200).json(types);
-
-    } else {
-        res.status(404).json({ message: 'Type not found!'});
+    try {
+        const fields = req.body;
+        const [types, _] = await Type.search(fields);
+        if (types.length != 0) {
+            res.status(200).json(types);
+    
+        } else {
+            res.status(404).json({ message: 'Type not found!'});
+    
+        }
+        
+    } catch (erorr) {
+        res.status(400).json({ error: erorr.message });
 
     }
 }

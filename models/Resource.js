@@ -17,7 +17,7 @@ class Resource {
         this.title = title;
         this.description = description;
         this.link = link;
-        this.date = date;
+        this.date = CurrentDateGenerator.getCurrentDate();
     }
 
     async addResource() {
@@ -99,35 +99,42 @@ class Resource {
     }
 
     /**
-     * @param {JSON} fields
-     */
+     * @param {Object} fields - The search criteria.
+    */
     static async search(fields) {
         let query = /*sql*/`SELECT * FROM resources WHERE 1`;
+        const values = [];
 
         const { username, title, description, link, date } = fields;
 
         if (username) {
             query += /*sql*/` AND username LIKE ?`;
+            values.push(`%${username}%`);
         }
 
         if (title) {
             query += /*sql*/` AND title LIKE ?`;
+            values.push(`%${title}%`);
         }
 
         if (description) {
             query += /*sql*/` AND description LIKE ?`;
+            values.push(`%${description}%`);
         }
 
         if (link) {
             query += /*sql*/` AND link LIKE ?`;
+            values.push(`%${link}%`);
         }
 
         if (date) {
             query += /*sql*/` AND date = ?`;
+            values.push(date);
         }
 
-        return await db.execute(query, Object.values(fields));
+        return await db.execute(query, values);
     }
+
 
     static async getRecentResources() {
         let sql = /*sql*/`
